@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prezencik dla aniolka</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.1/lottie.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        #animation-container {
+            position: relative;
+            width: 768px;
+            height: 768px;
+            display: none;
+        }
+
+        #text-overlay {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 100px;
+            color: white;
+            font-weight: bold;
+            opacity: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .letter {
+            opacity: 0;
+            transform: translateX(-30px);  
+        }
+
+        @keyframes showText {
+            to {
+                opacity: 1;
+                transform: translateX(0);  
+            }
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle 1.5s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            50% { opacity: 0.7; }
+            100% { opacity: 0.2; }
+        }
+
+        button { 
+            width: 163px;
+            height: 62px;
+            cursor: pointer;
+            color: #ffffff;
+            font-size: 17px;
+            border-radius: 1rem;
+            border: none;
+            position: relative;
+            background: #100720;
+            transition: background 1.5s ease, transform 1.5s ease;
+        }
+
+        button::after {
+            content: '';
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(
+                circle farthest-corner at 10% 20%, 
+                rgba(255, 94, 247, 1) 17.8%, 
+                rgba(2, 245, 255, 1) 100%
+            );
+            filter: blur(15px);
+            z-index: -1;
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 1rem;
+        }
+
+        button:hover {
+            background: radial-gradient(
+                circle farthest-corner at 10% 20%, 
+                rgba(255, 94, 247, 1) 17.8%, 
+                rgba(2, 245, 255, 1) 100%
+            );
+            transform: scale(1.05);
+            transition: background 0.5s ease, transform 0.5s ease;
+        }
+
+        button:active {    
+            transform: scale(0.9) rotate(3deg);
+            background: radial-gradient(
+                circle farthest-corner at 10% 20%, 
+                rgba(255, 94, 247, 1) 17.8%, 
+                rgba(2, 245, 255, 1) 100%
+            );
+            transition: 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            #text-overlay {
+                font-size: 50px;
+            }
+
+            #animation-container {
+                width: 300px;
+                height: 300px;
+            }
+
+            #start-button {
+                font-size: 16px;
+                padding: 15px 30px;
+            }
+        }
+
+        #next-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 163px;
+            height: 62px;
+            cursor: pointer;
+            color: #ffffff;
+            font-size: 17px;
+            border-radius: 1rem;
+            border: none;
+            background: #100720;
+            transition: transform 0.3s ease, background 0.5s ease;
+            display: none;
+        }
+
+        #next-button:hover {
+            background: radial-gradient(
+                circle farthest-corner at 10% 20%, 
+                rgba(255, 94, 247, 1) 17.8%, 
+                rgba(2, 245, 255, 1) 100%
+            );
+            transform: translateX(-50%) scale(1.05);
+        }
+
+        #next-button:active {
+            transform: translate(-50%, -10px);
+            background: radial-gradient(
+                circle farthest-corner at 10% 20%, 
+                rgba(200, 50, 200, 1) 17.8%, 
+                rgba(0, 200, 255, 1) 100%
+            );
+        }
+    </style>
+</head>
+<body>
+    <button id="start-button">Enchanted</button>
+    <div class="stars" id="stars"></div>
+
+    <div id="text-overlay">
+        <div class="letter">K</div>
+        <div class="letter">o</div>
+        <div class="letter">c</div>
+        <div class="letter">h</div>
+        <div class="letter">a</div>
+        <div class="letter">m</div>
+        <div class="letter">&nbsp;</div>
+        <div class="letter">C</div>
+        <div class="letter">i</div>
+        <div class="letter">ę</div>
+    </div>
+    
+    <div id="animation-container">
+        <div id="lottie-animation"></div>
+    </div>
+
+    <button id="next-button" style="display: none;">Dalej</button>
+
+    <script>
+    const animation = lottie.loadAnimation({
+        container: document.getElementById('lottie-animation'),
+        renderer: 'svg',
+        loop: false,
+        autoplay: false,
+        path: './Zdjecia/SjdeXyEdby.json'
+    });
+
+    animation.addEventListener('error', () => {
+        console.error('Nie udało się załadować animacji.');
+    });
+
+    document.getElementById('lottie-animation').style.transform = 'scale(1.2)';
+
+    const textOverlay = document.getElementById("text-overlay");
+    const startButton = document.getElementById("start-button");
+    const nextButton = document.getElementById("next-button");
+    const letters = document.querySelectorAll('.letter');
+    const starsContainer = document.getElementById("stars");
+
+    function generateStars() {
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            const size = Math.random() * 2 + 1 + 'px';
+            const left = Math.random() * 100 + '%';
+            const top = Math.random() * 100 + '%';
+            const animationDelay = Math.random() * 3 + 's';
+
+            star.style.width = size;
+            star.style.height = size;
+            star.style.left = left;
+            star.style.top = top;
+            star.style.animationDelay = animationDelay;
+
+            starsContainer.appendChild(star);
+        }
+    }
+
+    function startAnimation() {
+        startButton.style.display = 'none';
+        document.getElementById('animation-container').style.display = 'block';
+
+        setTimeout(() => {
+            animation.play();
+        }, 500);
+
+        setTimeout(() => {
+            textOverlay.style.opacity = "1";
+            
+            let delay = 0.5;
+            letters.forEach((letter, index) => {
+                letter.style.transition = `opacity 0.8s ${delay}s, transform 0.8s ${delay}s`;
+                letter.style.opacity = "1";
+                letter.style.transform = "translateX(0)";
+                delay += 0.25;
+            });
+        }, 1500);
+    }
+
+    startButton.addEventListener('click', startAnimation);
+
+    function navigateToCarousel() {
+        window.location.href = "Prezent2.html"; 
+    }
+
+    nextButton.addEventListener('click', navigateToCarousel);
+
+    animation.addEventListener('complete', () => {
+        nextButton.style.display = 'block';
+    });
+
+    generateStars();
+
+    </script>
+</body>
+</html>

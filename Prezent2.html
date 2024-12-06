@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karuzela naszych zdjęć</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle 1.5s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            50% { opacity: 0.7; }
+            100% { opacity: 0.2; }
+        }
+
+        .carousel {
+            position: relative;
+            width: 80%;
+            height: 70%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .carousel img {
+            position: absolute;
+            max-width: 100%;
+            max-height: 100%; 
+            object-fit: contain;
+            transition: transform 1s, opacity 1s;
+            opacity: 0.5;
+            transform: scale(0.8);
+        }
+
+        .carousel img.center {
+            transform: translateX(0) scale(1);
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .carousel img.left {
+            transform: translateX(-100%) scale(0.8);
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        .carousel img.right {
+            transform: translateX(100%) scale(0.8);
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        .carousel img.hidden {
+            opacity: 0;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <div class="carousel" id="carousel"></div>
+
+    <script>
+        const starsContainer = document.getElementById("stars");
+
+        function generateStars() {
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                const size = Math.random() * 2 + 1 + 'px';
+                const left = Math.random() * 100 + '%';
+                const top = Math.random() * 100 + '%';
+                const animationDelay = Math.random() * 3 + 's';
+
+                star.style.width = size;
+                star.style.height = size;
+                star.style.left = left;
+                star.style.top = top;
+                star.style.animationDelay = animationDelay;
+
+                starsContainer.appendChild(star);
+            }
+        }
+
+        let imageList = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg', '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg',];
+
+        const carousel = document.getElementById("carousel");
+        let currentIndex = 0;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        shuffleArray(imageList);
+
+        function initializeCarousel() {
+            imageList.forEach((image, index) => {
+                const img = document.createElement("img");
+                img.src = `./Zdjecia/${image}`;
+                img.alt = `Image ${index + 1}`;
+                img.className = index === 0
+                    ? "center"
+                    : index === 1
+                        ? "right"
+                        : index === imageList.length - 1
+                            ? "left"
+                            : "hidden";
+                carousel.appendChild(img);
+            });
+        }
+
+        function updateCarousel() {
+            const images = Array.from(carousel.querySelectorAll("img"));
+            const totalImages = images.length;
+
+            images.forEach((img, index) => {
+                img.className = "hidden";
+            });
+
+            const prevIndex = (currentIndex - 1 + totalImages) % totalImages;
+            const nextIndex = (currentIndex + 1) % totalImages;
+
+            images[currentIndex].className = "center";
+            images[prevIndex].className = "left";
+            images[nextIndex].className = "right";
+        }
+
+        function startCarousel() {
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % imageList.length; 
+                updateCarousel(); 
+            }, 5000); 
+        }
+        generateStars();
+        initializeCarousel();
+        updateCarousel();
+        startCarousel();
+    </script>
+</body>
+</html>
